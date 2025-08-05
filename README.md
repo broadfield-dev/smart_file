@@ -69,12 +69,14 @@ for result in results:
 ```
 
 ### Running the Gradio Demo
-
-After installing the development dependencies, you can run the demo app:
-
+Clone this repository
 ```bash
-cd demo
-python app.py
+git clone https://github.com/broadfield-dev/smartfile.git
+```
+
+Run the demo from the command line
+```bash
+python smartfile/demo.py
 ```
 
 The application will launch on a local URL, providing a full UI for browsing, indexing, and searching your filesystem.
