@@ -115,12 +115,15 @@ class SemanticExplorer:
             for i, dist in enumerate(results['distances'][0]):
                 meta = results['metadatas'][0][i]
                 output.append({
-                    "similarity": 1 - dist, "path": meta['relative_path'],
+                    "similarity": 1 - dist,
+                    "path": meta['relative_path'],
+                    "full_path": meta['full_path'], # <-- ADD THIS LINE
                     "type": "📁 Folder" if meta['is_dir'] else "📄 File",
                     "size": meta['size_bytes'] if not meta['is_dir'] else None,
                     "modified": datetime.datetime.fromtimestamp(meta['modified_time'])
                 })
         return output
+
 
     def clear_index(self) -> int:
         """Deletes all items from the collection."""
