@@ -56,7 +56,7 @@ for result in results:
 ### Running the Gradio Demo
 Clone this repository
 ```bash
-git clone https://github.com/broadfield-dev/smartfile.git
+git clone https://github.com/broadfield-dev/smartfile
 ```
 
 Install the dependencies 
