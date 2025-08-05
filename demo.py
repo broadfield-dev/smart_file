@@ -3,24 +3,19 @@ import pandas as pd
 from pathlib import Path
 import os
 
-# Import the library we just created!
 from smartfile import SemanticExplorer, utils
 
-# --- Global Instance of our Explorer ---
-file_explorer = SemanticExplorer()
+explorer = SemanticExplorer()
 
-# --- UI Definition ---
-with gr.Blocks(theme=gr.themes.Soft(), title="Smart File Explorer Demo") as demo:
-    gr.Markdown("# 🚀 Smart File Explorer Demo")
-    gr.Markdown("A demonstration of the `Smart File` library for filesystem exploration and semantic search.")
+with gr.Blocks(theme=gr.themes.Soft(), title="SmartFile Demo") as demo:
+    gr.Markdown("# 🚀 SmartFile Demo")
+    gr.Markdown("A demonstration of the `smartfile` library for filesystem exploration and semantic search.")
 
     initial_path = Path.cwd().anchor
     current_dir_state = gr.State(value=initial_path)
 
     with gr.Tabs():
-        # --- TAB 1: FILE EXPLORER ---
         with gr.TabItem("📂 File Explorer"):
-            # ... (Layout is identical to before) ...
             with gr.Row():
                 with gr.Column(scale=1, min_width=250):
                     gr.Markdown("### Navigation")
@@ -38,11 +33,12 @@ with gr.Blocks(theme=gr.themes.Soft(), title="Smart File Explorer Demo") as demo
                     selected_file_path = gr.Textbox(label="Selected File Path", interactive=False)
                     file_content_display = gr.Code(label="Content", language=None, lines=20, interactive=False)
 
-        # --- TAB 2: SEMANTIC SEARCH ---
         with gr.TabItem("🔎 Semantic Search"):
-            # ... (Layout is identical to before) ...
             gr.Markdown("### Persistent Vector Search")
-            gr.Markdown("The index is stored on disk and loaded on startup. Re-building the index will update or add new files.")
+            gr.Markdown("Click on a file in the search results to view its content below.")
+            
+            search_results_state = gr.State([])
+
             with gr.Row():
                 index_path_input = gr.Textbox(label="Directory to Index", value=os.getcwd(), interactive=True)
                 with gr.Column():
@@ -50,13 +46,21 @@ with gr.Blocks(theme=gr.themes.Soft(), title="Smart File Explorer Demo") as demo
                     stop_button = gr.Button("Stop Building", variant="stop", visible=False)
             with gr.Row():
                 clear_index_button = gr.Button("Clear Entire Index", variant="stop")
+            
             index_status_label = gr.Label(label="Index Status")
+            
             with gr.Row():
                 search_query_input = gr.Textbox(label="Search Query", placeholder="e.g., 'a function to login a user' or 'test cases for the API'", interactive=True, scale=4)
+            
             gr.Markdown("### Search Results")
-            search_results_df = gr.DataFrame(headers=["Similarity", "Path", "Type", "Size (Bytes)", "Modified"], interactive=False)
+            search_results_df = gr.DataFrame(headers=["Similarity", "Path", "Type", "Size (Bytes)", "Modified"], interactive=True) # Set interactive=True
 
-        # --- TABS 3 & 4: SYSTEM INFO ---
+            with gr.Row():
+                with gr.Column():
+                    gr.Markdown("### File Content Viewer (from Search)")
+                    search_selected_file_path = gr.Textbox(label="Selected File Path", interactive=False)
+                    search_content_display = gr.Code(label="Content", language=None, lines=20, interactive=False)
+
         with gr.TabItem("ℹ️ System & Dependencies"):
             with gr.Row():
                 with gr.Column():
@@ -68,13 +72,10 @@ with gr.Blocks(theme=gr.themes.Soft(), title="Smart File Explorer Demo") as demo
                     refresh_sysinfo_button = gr.Button("Refresh System Info")
                     sysinfo_display = gr.Code(language="shell", lines=20)
 
-
-    # --- Event Handlers (Now they call the library methods) ---
     def update_file_list(path_str):
         df, label = utils.get_directory_contents(path_str)
         return df, label, path_str
     
-    # ... (All other file browser handlers are the same, but they now call `utils` functions) ...
     demo.load(update_file_list, [current_dir_state], [file_list_df, current_path_display, current_dir_state])
     path_input.submit(update_file_list, [path_input], [file_list_df, current_path_display, current_dir_state])
     def handle_row_select(evt: gr.SelectData, df: pd.DataFrame, current_dir: str):
@@ -93,34 +94,48 @@ with gr.Blocks(theme=gr.themes.Soft(), title="Smart File Explorer Demo") as demo
     refresh_pip_button.click(utils.get_pip_freeze, [], pip_list_display)
     refresh_sysinfo_button.click(utils.get_disk_usage, [], sysinfo_display)
 
-    # --- Search Handlers ---
     def do_build_index(path, progress=gr.Progress(track_tqdm=True)):
-        # This is a wrapper that calls the generator from our library
-        for status in file_explorer.index_directory(path):
-            progress(0, desc=status) # Use progress to show status
-            yield status # Yield status to update the label
+        for status in explorer.index_directory(path):
+            progress(0, desc=status)
+            yield status
 
     def do_search(query):
-        results = file_explorer.search(query)
-        # Format for DataFrame
+        # This function now returns both the display DF and the raw results for state
+        raw_results = explorer.search(query)
         df_data = [{
             "Similarity": f"{r['similarity']:.3f}",
             "Path": r['path'],
             "Type": r['type'],
             "Size (Bytes)": r['size'] if r['size'] is not None else "",
             "Modified": r['modified'].strftime('%Y-%m-%d %H:%M')
-        } for r in results]
-        return pd.DataFrame(df_data)
+        } for r in raw_results]
+        return pd.DataFrame(df_data), raw_results
 
     def do_clear_index():
-        count = file_explorer.clear_index()
+        count = explorer.clear_index()
         return f"Successfully cleared {count} items from the index."
     
-    # --- UI Wiring ---
-    demo.load(file_explorer.get_status, outputs=[index_status_label])
+    def handle_search_row_select(evt: gr.SelectData, raw_results: list):
+        if evt.index is None or not raw_results:
+            return "", "# Select a file from the search results to view its content."
+
+        selected_index = evt.index[0]
+        selected_item = raw_results[selected_index]
+        
+        full_path = selected_item.get("full_path")
+        if not full_path:
+            return "Error: Full path not found in search results.", "# Could not load content."
+
+        if selected_item['type'] == "📁 Folder":
+            return full_path, "# This is a directory. You can navigate to it in the File Explorer tab."
+        else:
+            content, _ = utils.get_file_content(full_path)
+            return full_path, content
+
+    demo.load(explorer.get_status, outputs=[index_status_label])
 
     def start_indexing(): return gr.update(visible=False), gr.update(visible=True)
-    def stop_indexing(): file_explorer.cancel_indexing(); return gr.update(visible=True), gr.update(visible=False)
+    def stop_indexing(): explorer.cancel_indexing(); return gr.update(visible=True), gr.update(visible=False)
     def finish_indexing(): return gr.update(visible=True), gr.update(visible=False)
 
     click_event = build_index_button.click(start_indexing, outputs=[build_index_button, stop_button]) \
@@ -129,7 +144,19 @@ with gr.Blocks(theme=gr.themes.Soft(), title="Smart File Explorer Demo") as demo
     
     stop_button.click(stop_indexing, outputs=[build_index_button, stop_button], cancels=[click_event])
     clear_index_button.click(do_clear_index, outputs=[index_status_label])
-    search_query_input.submit(do_search, inputs=[search_query_input], outputs=[search_results_df])
+    
+    search_query_input.submit(
+        fn=do_search,
+        inputs=[search_query_input],
+        outputs=[search_results_df, search_results_state]
+    )
+
+    search_results_df.select(
+        fn=handle_search_row_select,
+        inputs=[search_results_state],
+        outputs=[search_selected_file_path, search_content_display]
+    )
+
 
 if __name__ == "__main__":
     demo.launch()
