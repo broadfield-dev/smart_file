@@ -3,7 +3,7 @@ import pandas as pd
 from pathlib import Path
 import os
 
-from smartfile import SemanticExplorer, utils
+from core import SemanticExplorer, utils
 
 explorer = SemanticExplorer()
 
