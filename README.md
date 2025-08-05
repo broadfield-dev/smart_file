@@ -20,30 +20,15 @@ You can install the library directly from GitHub:
 pip install git+https://github.com/broadfield-dev/smartfile.git
 ```
 
-### For Development
-
-To set up the project for development (including the demo):
-
-```bash
-# 1. Clone the repository
-git clone https://github.com/broadfield-dev/smartfile.git
-cd filesem-explorer
-
-# 2. Install the library in editable mode
-pip install -e .
-
-# 3. Install the demo dependencies
-pip install -r demo/requirements.txt
-```
 
 ## Usage
 
 ### As a Python Library
 
-Here is a minimal example of how to use `filesem` in your own script:
+Here is a minimal example of how to use `smartfile` in your own script:
 
 ```python
-from filesem import SemanticExplorer
+from smartfile.core import SemanticExplorer
 import os
 
 # Initialize the explorer (it will use a './chroma_db' folder by default)
