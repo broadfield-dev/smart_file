@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "smart_file"
+name = "smartfile"
 version = "0.1.0"
 authors = [
   { name="broadfield-dev", email="broadfield-dev@example.com" },
@@ -25,8 +25,8 @@ dependencies = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/broadfield-dev/smart_file"
-"Bug Tracker" = "https://github.com/broadfield-dev/smart_file/issues"
+"Homepage" = "https://github.com/broadfield-dev/smartfile"
+"Bug Tracker" = "https://github.com/broadfield-dev/smartfile/issues"
 
 [tool.setuptools.packages.find]
 where = ["smart_file"]
