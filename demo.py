@@ -15,24 +15,6 @@ with gr.Blocks(theme=gr.themes.Soft(), title="SmartFile Demo") as demo:
     current_dir_state = gr.State(value=initial_path)
 
     with gr.Tabs():
-        with gr.TabItem("📂 File Explorer"):
-            with gr.Row():
-                with gr.Column(scale=1, min_width=250):
-                    gr.Markdown("### Navigation")
-                    up_button = gr.Button("⬆️ Go Up")
-                    home_button = gr.Button("🏠 Go to App Home")
-                    root_button = gr.Button("̸ Go to Root")
-                    gr.Markdown("### Go to Path:")
-                    path_input = gr.Textbox(label="Enter path and press Enter", value=initial_path, interactive=True)
-                with gr.Column(scale=3):
-                    current_path_display = gr.Label(label="Current Directory")
-                    file_list_df = gr.DataFrame(headers=["Name", "Type", "Size (bytes)", "Modified", "Permissions"], interactive=True, row_count=(15, "dynamic"))
-            with gr.Row():
-                with gr.Column():
-                    gr.Markdown("### File Content Viewer")
-                    selected_file_path = gr.Textbox(label="Selected File Path", interactive=False)
-                    file_content_display = gr.Code(label="Content", language=None, lines=20, interactive=False)
-
         with gr.TabItem("🔎 Semantic Search"):
             gr.Markdown("### Persistent Vector Search")
             gr.Markdown("Click on a file in the search results to view its content below.")
@@ -60,6 +42,24 @@ with gr.Blocks(theme=gr.themes.Soft(), title="SmartFile Demo") as demo:
                     gr.Markdown("### File Content Viewer (from Search)")
                     search_selected_file_path = gr.Textbox(label="Selected File Path", interactive=False)
                     search_content_display = gr.Code(label="Content", language=None, lines=20, interactive=False)
+
+        with gr.TabItem("📂 File Explorer"):
+            with gr.Row():
+                with gr.Column(scale=1, min_width=250):
+                    gr.Markdown("### Navigation")
+                    up_button = gr.Button("⬆️ Go Up")
+                    home_button = gr.Button("🏠 Go to App Home")
+                    root_button = gr.Button("̸ Go to Root")
+                    gr.Markdown("### Go to Path:")
+                    path_input = gr.Textbox(label="Enter path and press Enter", value=initial_path, interactive=True)
+                with gr.Column(scale=3):
+                    current_path_display = gr.Label(label="Current Directory")
+                    file_list_df = gr.DataFrame(headers=["Name", "Type", "Size (bytes)", "Modified", "Permissions"], interactive=True, row_count=(15, "dynamic"))
+            with gr.Row():
+                with gr.Column():
+                    gr.Markdown("### File Content Viewer")
+                    selected_file_path = gr.Textbox(label="Selected File Path", interactive=False)
+                    file_content_display = gr.Code(label="Content", language=None, lines=20, interactive=False)
 
         with gr.TabItem("ℹ️ System & Dependencies"):
             with gr.Row():
