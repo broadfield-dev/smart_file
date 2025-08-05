@@ -74,6 +74,11 @@ Clone this repository
 git clone https://github.com/broadfield-dev/smartfile.git
 ```
 
+Install the dependencies 
+```bash
+pip install -r smartfile/requirements.txt
+```
+
 Run the demo from the command line
 ```bash
 python smartfile/demo.py
