@@ -30,4 +30,4 @@ dependencies = [
 "Bug Tracker" = "https://github.com/broadfield-dev/smartfile/issues"
 
 [tool.setuptools.packages.find]
-where = ["smartfile"]
+where = ["core"]
