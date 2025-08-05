@@ -84,4 +84,4 @@ Run the demo from the command line
 python smartfile/demo.py
 ```
 
-The application will launch on a local URL, providing a full UI for browsing, indexing, and searching your filesystem.
+The application will launch on a local URL (127.0.0.1:7860), providing a full UI for browsing, indexing, and searching your filesystem.
