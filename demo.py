@@ -6,8 +6,8 @@ from core import SemanticExplorer, utils, chat_agent, model_logic
 
 explorer = SemanticExplorer()
 
-with gr.Blocks(theme=gr.themes.Soft(), title="SmartFile AI Explorer") as demo:
-    gr.Markdown("# 🚀 SmartFile AI Explorer")
+with gr.Blocks(theme=gr.themes.Soft(), title="SmartFile Explorer") as demo:
+    gr.Markdown("# 🚀 SmartFile Explorer")
     gr.Markdown("An AI-powered assistant for filesystem exploration and semantic search.")
     initial_path = Path.cwd().anchor
     current_dir_state = gr.State(value=initial_path)
