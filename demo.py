@@ -11,14 +11,13 @@ with gr.Blocks(theme=gr.themes.Soft(), title="SmartFile Explorer") as demo:
     gr.Markdown("An AI-powered assistant for filesystem exploration and semantic search.")
     initial_path = Path.cwd().anchor
     current_dir_state = gr.State(value=initial_path)
-    with gr.Sidebar():
+    with gr.Sidebar(open=False):
         gr.Markdown("### 🤖 Model Settings")
-        with gr.Accordion("Expand to Configure", open=False):
-            provider_dropdown = gr.Dropdown(label="Select Provider", choices=model_logic.get_available_providers(), value=model_logic.get_available_providers()[0] if model_logic.get_available_providers() else None, interactive=True)
-            model_dropdown = gr.Dropdown(label="Select Model", choices=model_logic.get_model_display_names_for_provider(provider_dropdown.value or ""), value=model_logic.get_default_model_display_name_for_provider(provider_dropdown.value or ""), interactive=True)
-            api_key_textbox = gr.Textbox(label="API Key (Optional Override)", placeholder="Overrides key from .env file", type="password", interactive=True)
-            temperature_slider = gr.Slider(minimum=0.0, maximum=2.0, value=0.3, step=0.1, label="Temperature", interactive=True)
-            max_tokens_slider = gr.Slider(minimum=256, maximum=8192, value=2048, step=256, label="Max New Tokens", interactive=True)
+        provider_dropdown = gr.Dropdown(label="Select Provider", choices=model_logic.get_available_providers(), value=model_logic.get_available_providers()[0] if model_logic.get_available_providers() else None, interactive=True)
+        model_dropdown = gr.Dropdown(label="Select Model", choices=model_logic.get_model_display_names_for_provider(provider_dropdown.value or ""), value=model_logic.get_default_model_display_name_for_provider(provider_dropdown.value or ""), interactive=True)
+        api_key_textbox = gr.Textbox(label="API Key (Optional Override)", placeholder="Overrides key from .env file", type="password", interactive=True)
+        temperature_slider = gr.Slider(minimum=0.0, maximum=2.0, value=0.3, step=0.1, label="Temperature", interactive=True)
+        max_tokens_slider = gr.Slider(minimum=256, maximum=8192, value=2048, step=256, label="Max New Tokens", interactive=True)
     with gr.Tabs():
         with gr.TabItem("💬 Chatbot Assistant"):
             with gr.Row():
