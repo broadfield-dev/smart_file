@@ -29,5 +29,6 @@ dependencies = [
 "Homepage" = "https://github.com/broadfield-dev/smartfile"
 "Bug Tracker" = "https://github.com/broadfield-dev/smartfile/issues"
 
-[tool.setuptools.packages.find]
-where = ["core"]
+[tool.setuptools]
+package-dir = {"smartfile" = "core"}
+packages = ["smartfile"]
