@@ -1,6 +1,6 @@
 import json
 import re
-from core import model_logic
+from . import model_logic
 
 def _extract_xml_tag(tag: str, text: str) -> str | None:
     match = re.search(f'<{tag}>(.*?)</{tag}>', text, re.DOTALL)
